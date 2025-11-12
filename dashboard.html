@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台語羅馬字研習營報名現況儀表板</title>
+    <!-- 載入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 載入 Inter 字體 -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8; /* 淺藍灰色底 */
+        }
+        /* 莫蘭迪色調 */
+        .morandi-bg-light { background-color: #dddccf; } /* 淺灰米色 */
+        .morandi-text-dark { color: #5a5a49; } /* 深綠灰文字 */
+        .morandi-accent { background-color: #92b4a3; } /* 莫蘭迪綠強調色 */
+        /* 第一個卡片的深色系 (保留給單一卡片使用) */
+        .morandi-bg-darkblue { background-color: #8d99ae; } /* 莫蘭迪深藍 */
+        .morandi-text-contrast { color: #2b2d42; } /* 較深的文字色 - 用於報名人數數字 */
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 2rem;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header class="text-center pb-8 mb-8 border-b border-gray-300">
+            <h1 class="text-4xl font-extrabold morandi-text-dark">
+                台語羅馬字研習營 報名現況儀表板
+            </h1>
+            <p id="updateTime" class="text-lg mt-2 text-gray-500">資料更新中...</p>
+        </header>
+
+        <!-- 總覽指標區塊 (合併為單一欄位顯示總報名人數) -->
+        <div id="summary-metrics" class="grid grid-cols-1 gap-6 mb-12">
+            <!-- 總報名人數 - 單一卡片 -->
+            <div class="card morandi-bg-darkblue text-white text-center p-8">
+                <!-- 標題文字仍保持白色，以利閱讀 -->
+                <p class="text-2xl opacity-80">總報名人數</p>
+                
+                <!-- 報名人數數字改為深色 morandi-text-contrast: #2b2d42 -->
+                <p id="totalCount" class="text-7xl font-extrabold mt-3 morandi-text-contrast">0</p>
+                
+                <!-- 註解文字仍保持白色 -->
+                <p class="text-xl opacity-70 mt-4">（報名限額：50 人，即時更新）</p>
+            </div>
+        </div>
+
+        <!-- 細節分佈區塊 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- 職稱分佈 -->
+            <div class="card">
+                <h2 class="text-2xl font-semibold morandi-text-dark mb-4 border-b pb-2">🩺 職稱分佈 (Top 5)</h2>
+                <div id="titleChart" class="space-y-4">
+                    <p class="text-gray-500">載入中...</p>
+                </div>
+            </div>
+
+            <!-- 台語程度分佈 -->
+            <div class="card">
+                <h2 class="text-2xl font-semibold morandi-text-dark mb-4 border-b pb-2">🗣️ 台語程度分佈</h2>
+                <div id="levelChart" class="space-y-4">
+                    <p class="text-gray-500">載入中...</p>
+                </div>
+            </div>
+
+            <!-- 參加動機統計 -->
+            <div class="card lg:col-span-2">
+                <h2 class="text-2xl font-semibold morandi-text-dark mb-4 border-b pb-2">💡 參加動機統計</h2>
+                <div id="motivationChart" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <p class="text-gray-500 sm:col-span-2">載入中...</p>
+                </div>
+            </div>
+            
+            <!-- 單位／科別排名 (Top 5) -->
+            <div class="card lg:col-span-2">
+                <h2 class="text-2xl font-semibold morandi-text-dark mb-4 border-b pb-2">🏥 單位／科別排名 (Top 10)</h2>
+                <div id="departmentTable" class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">排名</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">單位／科別</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">報名人數</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="3" class="px-4 py-4 text-sm text-gray-500">載入中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 錯誤訊息 -->
+        <div id="error-message" class="hidden fixed top-4 right-4 bg-red-100 text-red-800 p-3 rounded-lg shadow-lg" role="alert">
+            資料載入失敗。
+        </div>
+
+    </div>
+
+    <script>
+        // -----------------------------------------------------
+        // Google Apps Script Web App URL (與報名表相同)
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkp8KVN9lI5qy_wkfdx3lV_mQH0fectd-zJDJqqtwyUXHgjY-kL48HM0B12hp3fib4/exec'; 
+        const REGISTRATION_LIMIT = 50;
+        // -----------------------------------------------------
+        
+        // 僅保留總報名人數的元素引用
+        const totalCountEl = document.getElementById('totalCount');
+        const updateTimeEl = document.getElementById('updateTime');
+        const errorMessageEl = document.getElementById('error-message');
+
+        const titleChartEl = document.getElementById('titleChart');
+        const levelChartEl = document.getElementById('levelChart');
+        const motivationChartEl = document.getElementById('motivationChart');
+        const departmentTableEl = document.getElementById('departmentTable');
+
+        // 顯示錯誤訊息
+        function showMessage(message) {
+            errorMessageEl.textContent = message;
+            errorMessageEl.classList.remove('hidden');
+            setTimeout(() => {
+                errorMessageEl.classList.add('hidden');
+            }, 8000);
+        }
+
+        // 輔助函式：計算頻率
+        function countFrequencies(dataArray) {
+            return dataArray.reduce((acc, item) => {
+                // 排除空值
+                if (item) {
+                    acc[item] = (acc[item] || 0) + 1;
+                }
+                return acc;
+            }, {});
+        }
+        
+        // 輔助函式：處理多選欄位 (如參加動機，以分號分隔)
+        function countMultiSelectFrequencies(dataArray) {
+            const counts = {};
+            dataArray.forEach(item => {
+                if (item) {
+                    const motives = item.split(';').map(m => m.trim()).filter(m => m);
+                    motives.forEach(m => {
+                        counts[m] = (counts[m] || 0) + 1;
+                    });
+                }
+            });
+            return counts;
+        }
+
+        // 輔助函式：將頻率轉換為可繪圖的陣列 (包含百分比)
+        function formatDataForChart(frequencies, total) {
+            return Object.entries(frequencies)
+                .map(([name, count]) => ({
+                    name,
+                    count,
+                    percentage: ((count / total) * 100).toFixed(1)
+                }))
+                .sort((a, b) => b.count - a.count); // 降冪排序
+        }
+
+        // 繪製長條圖
+        function renderBarChart(element, data, total) {
+            element.innerHTML = ''; // 清空舊內容
+            if (total === 0) {
+                element.innerHTML = '<p class="text-gray-500">目前尚無報名資料。</p>';
+                return;
+            }
+
+            data.forEach(item => {
+                const barWidth = item.percentage > 0 ? item.percentage : 0.5; // 最小寬度
+                
+                const barHtml = `
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0">
+                        <div class="w-full sm:w-1/3 font-medium morandi-text-dark text-sm pr-4">${item.name}</div>
+                        <div class="w-full sm:w-2/3 flex items-center">
+                            <div class="h-4 morandi-accent rounded-full shadow-inner" style="width: ${barWidth}%;"></div>
+                            <span class="ml-3 text-sm font-semibold text-gray-700">${item.count} 人 (${item.percentage}%)</span>
+                        </div>
+                    </div>
+                `;
+                element.insertAdjacentHTML('beforeend', barHtml);
+            });
+        }
+        
+        // 繪製表格
+        function renderTable(element, data) {
+            const tbody = element.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-sm text-gray-500">目前尚無報名資料。</td></tr>';
+                return;
+            }
+
+            data.slice(0, 10).forEach((item, index) => { // 僅顯示 Top 10
+                const rowHtml = `
+                    <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
+                        <td class="px-4 py-2 text-sm font-medium text-gray-900">${index + 1}</td>
+                        <td class="px-4 py-2 text-sm text-gray-700">${item.name}</td>
+                        <td class="px-4 py-2 text-sm text-gray-700 font-semibold">${item.count}</td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', rowHtml);
+            });
+        }
+
+        // 主資料處理函式
+        async function fetchAndRenderDashboard() {
+            try {
+                // 發送 GET 請求到 Apps Script Web App 讀取資料
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'GET',
+                    mode: 'cors', 
+                    cache: 'no-cache'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP 錯誤: ${response.status}`);
+                }
+                
+                const result = await response.json();
+
+                if (!result.success) {
+                    throw new Error(result.message || 'Apps Script 回傳失敗訊息');
+                }
+
+                const rawData = result.data;
+                const total = rawData.length;
+
+                // --- 1. 總覽指標 (單一欄顯示總報名人數) ---
+                totalCountEl.textContent = total;
+
+                // --- 2. 職稱分佈 ---
+                const titleData = formatDataForChart(countFrequencies(rawData.map(d => d['職稱'])), total);
+                renderBarChart(titleChartEl, titleData.slice(0, 5), total); // 僅顯示 Top 5
+
+                // --- 3. 台語程度分佈 ---
+                const levelData = formatDataForChart(countFrequencies(rawData.map(d => d['台語程度'])), total);
+                renderBarChart(levelChartEl, levelData, total);
+
+                // --- 4. 參加動機統計 ---
+                const motivationCounts = countMultiSelectFrequencies(rawData.map(d => d['參加動機']));
+                const motivationData = formatDataForChart(motivationCounts, total);
+                // 使用 grid-cols-2 佈局
+                motivationChartEl.className = "grid grid-cols-1 sm:grid-cols-2 gap-6"; 
+                renderBarChart(motivationChartEl, motivationData, total);
+
+
+                // --- 5. 單位／科別排名 ---
+                const departmentCounts = countFrequencies(rawData.map(d => d['單位／科別']));
+                const departmentData = formatDataForChart(departmentCounts, total); // 格式化為包含 name/count 的陣列
+                renderTable(departmentTableEl, departmentData);
+                
+                // 更新時間
+                updateTimeEl.textContent = `資料更新時間: ${new Date().toLocaleString('zh-TW', {
+                    year: 'numeric', month: '2-digit', day: '2-digit', 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', 
+                    hour12: false
+                })}`;
+
+
+            } catch (error) {
+                console.error('儀表板載入資料錯誤:', error);
+                showMessage('資料載入失敗，請確認 Apps Script 已正確部署且設定了 doGet 函式。' + error.message);
+                totalCountEl.textContent = '錯誤';
+            }
+        }
+
+        // 頁面載入完成後執行
+        window.onload = fetchAndRenderDashboard;
+        
+        // 每 60 秒自動更新一次
+        setInterval(fetchAndRenderDashboard, 60000); 
+
+    </script>
+
+</body>
+</html>

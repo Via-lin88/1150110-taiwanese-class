@@ -9,6 +9,9 @@
     <!-- 載入 Inter 字體 -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        /* 引入 Noto Sans TC 作為中文字體備援 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap');
+        
         body {
             font-family: 'Inter', 'Noto Sans TC', sans-serif;
             background-color: #f7f7f7; /* 淺灰色底 */
@@ -69,8 +72,8 @@
                 <h2 class="text-2xl font-semibold morandi-text-dark flex items-center mb-3 sm:mb-0">
                     <span class="text-3xl mr-3">📅</span> 課程場次 (兩場皆必修)
                     <!-- 剩餘名額 (限額 50 人) -->
-                    <span class="text-base font-normal ml-4 p-1 px-3 bg-red-100 text-red-600 rounded-full border border-red-300">
-                        剩餘名額：23 / 50
+                    <span id="spots-counter" class="text-base font-normal ml-4 p-1 px-3 bg-gray-200 text-gray-700 rounded-full border border-gray-300">
+                        剩餘名額：載入中...
                     </span>
                 </h2>
                 <!-- 加入Google行事曆按鈕 -->
@@ -297,6 +300,7 @@
                     border-radius: 50%;
                     cursor: pointer;
                     transition: all 0.2s ease-in-out;
+                    vertical-align: middle; /* 確保對齊 */
                 }
                 .morandi-radio:checked {
                     border-color: #b7b7a4; /* 莫蘭迪綠灰邊框 */
@@ -363,6 +367,8 @@
         const messageBox = document.getElementById('message_box');
         
         const countdownTimer = document.getElementById('countdown-timer');
+        const spotsCounter = document.getElementById('spots-counter'); // 抓取名額顯示的 span
+        const MAX_SPOTS = 50; // 總名額
 
         // 顯示訊息函式 (取代 alert)
         function showMessage(message, type = 'success') {
@@ -413,13 +419,91 @@
         }
         
         // 啟動倒數計時器
-        updateCountdown();
+        // updateCountdown(); // 移至 DOMContentLoaded
         const countdownInterval = setInterval(updateCountdown, 1000);
+
+        // *** 新增：抓取剩餘名額的函式 ***
+        async function fetchRemainingSpots() {
+            try {
+                // 增加一個 cache-busting 參數，確保每次都抓到最新資料
+                const response = await fetch(`${APPS_SCRIPT_URL}?v=${new Date().getTime()}`); 
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success && Array.isArray(result.data)) {
+                    const registeredCount = result.data.length;
+                    const remaining = MAX_SPOTS - registeredCount;
+                    
+                    if (remaining <= 0) {
+                        // 處理額滿
+                        spotsCounter.innerHTML = `名額已滿：${registeredCount} / ${MAX_SPOTS}`;
+                        spotsCounter.className = 'text-base font-normal ml-4 p-1 px-3 rounded-full border bg-red-200 text-red-800 border-red-400 font-bold';
+                        
+                        // 禁用表單所有輸入欄位
+                        form.querySelectorAll('input, textarea, select').forEach(el => {
+                            el.disabled = true;
+                        });
+
+                        // 禁用送出按鈕
+                        submitButton.disabled = true;
+                        submitButton.textContent = '報名已額滿';
+                        submitButton.classList.add('opacity-75', 'bg-gray-400');
+                        submitButton.classList.remove('morandi-bg-main', 'hover:bg-opacity-90');
+
+                    } else {
+                        // 顯示剩餘名額
+                        spotsCounter.innerHTML = `剩餘名額：${remaining} / ${MAX_SPOTS}`;
+                        spotsCounter.className = 'text-base font-normal ml-4 p-1 px-3 rounded-full border bg-red-100 text-red-600 border-red-300';
+                        
+                        // (如果需要) 確保表單是啟用的
+                        form.querySelectorAll('input, textarea, select').forEach(el => {
+                            // 不要啟用預設為 disabled 的欄位
+                            if (el.id !== 'title_other_text' && el.id !== 'motivation_other_text') {
+                                el.disabled = false;
+                            }
+                        });
+                        // 根據 radio/checkbox 狀態重設 "other" 欄位
+                        titleOtherText.disabled = !titleOtherRadio.checked;
+                        motivationOtherText.disabled = !motivationOtherCheckbox.checked;
+
+                        submitButton.disabled = false;
+                        submitButton.textContent = '送出報名表';
+                        submitButton.classList.remove('opacity-75', 'bg-gray-400');
+                        submitButton.classList.add('morandi-bg-main', 'hover:bg-opacity-90');
+                    }
+                } else {
+                    throw new Error('Invalid data format from server.');
+                }
+            } catch (error) {
+                console.error('Fetch remaining spots failed:', error);
+                spotsCounter.innerHTML = '名額載入失敗';
+                spotsCounter.className = 'text-base font-normal ml-4 p-1 px-3 rounded-full border bg-yellow-100 text-yellow-800 border-yellow-300';
+            }
+        }
+
+        // *** 頁面載入時執行 ***
+        document.addEventListener('DOMContentLoaded', () => {
+            // 啟動倒數計時器
+            updateCountdown();
+            // 抓取剩餘名額
+            fetchRemainingSpots();
+        });
+
 
         // 加入 Google 行事曆邏輯
         function addToGoogleCalendar() {
             // 課程一：1/10 08:00-12:00 (UTC+8 轉換)
+            // Google Calendar 使用 UTC 時間。 2026-01-10 08:00 TPE (UTC+8) 是 2026-01-10 00:00 UTC
+            // 結束時間 12:00 TPE 是 04:00 UTC
             const dates1 = '20260110T000000Z/20260110T040000Z'; 
+            
+            // 課程二：1/17 08:00-12:00
+            // const dates2 = '20260117T000000Z/20260117T040000Z';
+            // Google Calendar 對於多個事件的 RRULE 較為複雜，這裡先建立第一個事件，並在說明中註明有第二場。
 
             const title = encodeURIComponent('【兩場皆必修】115年台語羅馬字（白話字）研習營');
             const details = encodeURIComponent(
@@ -435,6 +519,7 @@
             );
             const location = encodeURIComponent('552 會議室');
             
+            // 使用第一個日期作為主要日期，並在詳情中包含兩場資訊
             const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates1}&details=${details}&location=${location}&ctz=Asia/Taipei`;
             
             window.open(calendarUrl, '_blank');
@@ -562,20 +647,23 @@
                 });
                 
                 // 由於 no-cors 模式限制，無法讀取實際響應內容，
-                // 只要 fetch 成功完成 (無網路錯誤)，即假設 Apps Script 接收成功並寫入資料。
-                showMessage('報名成功！資料已送至 Google Sheets。', 'success');
+                // Dooocode.com 只要 fetch 成功完成 (無網路錯誤)，即假設 Apps Script 接收成功並寫入資料。
+                showMessage('報名成功！資料已送出。', 'success');
                 
                 // 清空表單
                 form.reset();
                 titleOtherText.disabled = true;
                 motivationOtherText.disabled = true;
 
+                // *** 修改：送出成功後，重新抓取名額 ***
+                await fetchRemainingSpots(); 
+
             } catch (error) {
                 console.error('Apps Script Fetch Error:', error);
                 showMessage(`報名失敗：連線錯誤。請檢查您的網路或 Apps Script 部署設定。錯誤訊息: ${error.message}`, 'error');
             } finally {
                 submitButton.disabled = false;
-                submitButton.textContent = '送出報名表';
+                submitButton.textContent = '送出報N…';
                 submitButton.classList.remove('opacity-75');
             }
         });

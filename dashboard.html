@@ -37,6 +37,17 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
         }
+
+        /* 新增：總覽卡片的漸層與動畫 */
+        @keyframes pulse-bg {
+            0%, 100% { background-color: #798a9d; } /* 較暗的藍灰 */
+            50% { background-color: #8d99ae; } /* 原始顏色 */
+        }
+        .highlight-card {
+            background-image: linear-gradient(135deg, #798a9d 10%, #a4b3c4 100%);
+            animation: pulse-bg 8s infinite ease-in-out;
+            box-shadow: 0 10px 30px rgba(43, 45, 66, 0.3); /* 強化陰影 */
+        }
     </style>
 </head>
 <body>
@@ -51,12 +62,12 @@
 
         <!-- 總覽指標區塊 (合併為單一欄位顯示總報名人數) -->
         <div id="summary-metrics" class="grid grid-cols-1 gap-6 mb-12">
-            <!-- 總報名人數 - 單一卡片 -->
-            <div class="card morandi-bg-darkblue text-white text-center p-8">
+            <!-- 總報名人數 - 單一卡片，加入 highlight-card 類別 -->
+            <div class="card highlight-card text-white text-center p-8">
                 <!-- 標題文字仍保持白色，以利閱讀 -->
                 <p class="text-2xl opacity-80">總報名人數</p>
                 
-                <!-- 報名人數數字改為深色 morandi-text-contrast: #2b2d42 -->
+                <!-- 報名人數數字維持深色 morandi-text-contrast: #2b2d42 -->
                 <p id="totalCount" class="text-7xl font-extrabold mt-3 morandi-text-contrast">0</p>
                 
                 <!-- 註解文字仍保持白色 -->
@@ -246,6 +257,8 @@
                 }
 
                 const rawData = result.data;
+                // 注意：如果您的試算表第一行是標題，rawData.length 會是 (資料筆數 + 1)。
+                // 假設您的 Apps Script 已經正確過濾掉標題行，rawData.length 就是資料筆數。
                 const total = rawData.length;
 
                 // --- 1. 總覽指標 (單一欄顯示總報名人數) ---
@@ -282,7 +295,8 @@
 
             } catch (error) {
                 console.error('儀表板載入資料錯誤:', error);
-                showMessage('資料載入失敗，請確認 Apps Script 已正確部署且設定了 doGet 函式。' + error.message);
+                // 當資料載入失敗時，明確提示使用者檢查 Apps Script
+                showMessage('警告：資料載入失敗！請確認您的 Google Apps Script 已部署且權限為「所有人」。錯誤訊息：' + error.message);
                 totalCountEl.textContent = '錯誤';
             }
         }

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>115年台語羅馬字（白話字）研習營報名表</title>
+    <!-- 載入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 載入 Inter 字體 -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f7f7f7; /* 淺灰色底 */
+        }
+        /* 定義莫蘭迪色調 */
+        .morandi-bg-main { background-color: #b7b7a4; } /* 莫蘭迪綠灰 */
+        .morandi-bg-light { background-color: #dddccf; } /* 淺灰米色 */
+        .morandi-text-dark { color: #5a5a49; } /* 深綠灰文字 */
+        .morandi-border { border-color: #a2a295; } /* 較深的邊框 */
+        .morandi-input-focus:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #b7b7a480; /* 柔和的聚焦陰影 */
+            border-color: #b7b7a4;
+        }
+        .form-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="form-container rounded-xl">
+        <!-- 標題區塊 -->
+        <header class="text-center pb-8 border-b morandi-border">
+            <h1 class="text-3xl font-extrabold morandi-text-dark">
+                115年台語羅馬字（白話字）研習營
+            </h1>
+            <p class="text-xl mt-1 text-gray-500">院內同仁報名表</p>
+        </header>
+
+        <!-- 倒數計時器 -->
+        <!-- 115年1月10日 08:00 (ROC 115年 = 2026年) -->
+        <div id="countdown-timer" class="text-center mt-4 p-3 morandi-bg-light rounded-lg font-semibold text-lg morandi-text-dark shadow-md transition duration-300">
+            <!-- 倒數時間將由 JavaScript 填充 -->
+            距離開課倒數：載入中...
+        </div>
+
+        <!-- 活動宗旨與資訊 -->
+        <section class="mt-8 p-6 morandi-bg-light rounded-lg shadow-inner">
+            <h2 class="text-2xl font-semibold morandi-text-dark mb-4 flex items-center">
+                <span class="text-3xl mr-3">🎯</span> 活動宗旨與資訊
+            </h2>
+            <div class="space-y-2 text-gray-700">
+                <p><strong>宗旨：</strong> 鼓勵全院員工精進台語力，提升醫療服務品質。</p>
+                <p><strong>目標：</strong> 讓初學者熟悉台灣傳統羅馬字「白話字」的拚字規則。</p>
+                <p><strong>時間：</strong> 115.1/10 與 1/17 週六 8:00-12:00 (總時數 8 小時)</p>
+                <p><strong>地點：</strong> 552 會議室</p>
+            </div>
+        </section>
+
+        <!-- 課程場次 -->
+        <section class="mt-10">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                <h2 class="text-2xl font-semibold morandi-text-dark flex items-center mb-3 sm:mb-0">
+                    <span class="text-3xl mr-3">📅</span> 課程場次 (兩場皆必修)
+                    <!-- 剩餘名額 (限額 50 人) -->
+                    <span class="text-base font-normal ml-4 p-1 px-3 bg-red-100 text-red-600 rounded-full border border-red-300">
+                        剩餘名額：23 / 50
+                    </span>
+                </h2>
+                <!-- 加入Google行事曆按鈕 -->
+                <button type="button" onclick="addToGoogleCalendar()"
+                    class="bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-full shadow-md hover:bg-blue-700 transition duration-150 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2" viewBox="0 0 16 16">
+                        <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zM3.5 11h1A1.5 1.5 0 0 1 6 12.5V13h8V8H2v5h1.5v-2z"/>
+                    </svg>
+                    加入 Google 行事曆
+                </button>
+            </div>
+            <div class="overflow-x-auto rounded-lg border morandi-border">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="morandi-bg-main text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-medium">日期</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium">時間</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium">主題</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium">講師</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200 text-gray-700">
+                        <tr>
+                            <td class="px-4 py-3 whitespace-nowrap">1/10(六)</td>
+                            <td class="px-4 py-3 whitespace-nowrap">08:00–12:00</td>
+                            <td class="px-4 py-3">母音/子音/聲調與拚字規則</td>
+                            <td class="px-4 py-3 text-sm">陳金花 / 成大台文系兼任助理教授、台灣羅馬字協會常務理事</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 whitespace-nowrap">1/17(六)</td>
+                            <td class="px-4 py-3 whitespace-nowrap">08:00–12:00</td>
+                            <td class="px-4 py-3">白話字簡史／拼字練習／成果檢測／Q&A</td>
+                            <td class="px-4 py-3 text-sm">蔣為文 / 成大台文系教授、台灣語文測驗中心主任</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 報名表單 -->
+        <form id="registrationForm" class="mt-10 space-y-8">
+
+            <!-- 區塊一：基本資料 -->
+            <fieldset class="border-t border-b morandi-border py-8">
+                <legend class="text-2xl font-bold morandi-text-dark mb-6">一、基本資料 <span class="text-sm text-red-500">(標記 * 為必填)</span></legend>
+
+                <!-- 姓名 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label for="name" class="block text-lg font-medium morandi-text-dark">* 姓名：</label>
+                        <input type="text" id="name" name="name" required
+                            class="mt-1 block w-full rounded-md border morandi-border p-3 morandi-input-focus">
+                    </div>
+                    <!-- 人事號 -->
+                    <div>
+                        <label for="employee_id" class="block text-lg font-medium morandi-text-dark">* 人事號：</label>
+                        <input type="text" id="employee_id" name="employee_id" required placeholder="如：A12345"
+                            class="mt-1 block w-full rounded-md border morandi-border p-3 morandi-input-focus">
+                    </div>
+                </div>
+
+                <!-- 單位/科別 -->
+                <div class="mb-6">
+                    <label for="department" class="block text-lg font-medium morandi-text-dark">* 單位／科別：</label>
+                    <input type="text" id="department" name="department" required placeholder="例：內科部 加護病房"
+                        class="mt-1 block w-full rounded-md border morandi-border p-3 morandi-input-focus">
+                </div>
+
+                <!-- Email -->
+                <div class="mb-6">
+                    <label for="email" class="block text-lg font-medium morandi-text-dark">* Email：</label>
+                    <input type="email" id="email" name="email" required placeholder="將用於通知課程資訊"
+                        class="mt-1 block w-full rounded-md border morandi-border p-3 morandi-input-focus">
+                </div>
+
+                <!-- 聯絡電話 -->
+                <div class="mb-6">
+                    <p class="block text-lg font-medium morandi-text-dark">* 聯絡電話 (分機/手機 擇一必填)：</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+                        <div>
+                            <label for="extension" class="sr-only">分機</label>
+                            <input type="text" id="extension" name="phone_extension" placeholder="分機號碼"
+                                class="mt-1 block w-full rounded-md border morandi-border p-3 morandi-input-focus">
+                        </div>
+                        <div>
+                            <label for="mobile" class="sr-only">手機</label>
+                            <input type="text" id="mobile" name="phone_mobile" placeholder="手機號碼"
+                                class="mt-1 block w-full rounded-md border morandi-border p-3 morandi-input-focus">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 職稱 (單選) -->
+                <div>
+                    <p class="block text-lg font-medium morandi-text-dark mb-3">* 職稱 (請單選)：</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center text-gray-700">
+                            <input type="radio" name="title" value="醫師" required class="morandi-radio">
+                            <span class="ml-3">醫師</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="radio" name="title" value="醫護人員" class="morandi-radio">
+                            <span class="ml-3">醫護人員 (含護理師、專科護理師等)</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="radio" name="title" value="醫技人員" class="morandi-radio">
+                            <span class="ml-3">醫技人員 (含藥/檢/放/復健/營養等)</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="radio" name="title" value="行政人員" class="morandi-radio">
+                            <span class="ml-3">行政人員</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="radio" name="title" value="其他" id="title_other_radio" class="morandi-radio">
+                            <span class="ml-3">其他：</span>
+                            <input type="text" id="title_other_text" name="title_other_text"
+                                class="ml-2 px-2 py-1 border morandi-border rounded-md w-1/3 morandi-input-focus" disabled>
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- 區塊二：課程與程度確認 -->
+            <fieldset class="border-b morandi-border py-8">
+                <legend class="text-2xl font-bold morandi-text-dark mb-6">二、課程與程度確認</legend>
+
+                <!-- 課程出席確認 (必填) -->
+                <div class="mb-8">
+                    <p class="block text-lg font-medium morandi-text-dark mb-3">* 課程出席確認 (必填)：</p>
+                    <label class="flex items-center text-gray-700">
+                        <input type="checkbox" name="attendance_confirm" value="全程參加" required
+                            class="morandi-checkbox">
+                        <span class="ml-3">我確認 1/10 (六) 及 1/17 (六) 兩場課程皆可全程參加 (共 8 小時)。</span>
+                    </label>
+                </div>
+
+                <!-- 台語程度 (單選) -->
+                <div class="mb-8">
+                    <p class="block text-lg font-medium morandi-text-dark mb-3">* 台語程度 (請單選，供講師參考)：</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center text-gray-700">
+                            <input type="radio" name="taiwanese_level" value="完全初學者（從零開始）" required class="morandi-radio">
+                            <span class="ml-3">完全初學者（從零開始）</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="radio" name="taiwanese_level" value="聽懂但不太會講" class="morandi-radio">
+                            <span class="ml-3">聽懂但不太會講</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="radio" name="taiwanese_level" value="會講但不太會寫（不熟悉羅馬字）" class="morandi-radio">
+                            <span class="ml-3">會講但不太會寫（不熟悉羅馬字）</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="radio" name="taiwanese_level" value="會講也會寫（有羅馬字基礎）" class="morandi-radio">
+                            <span class="ml-3">會講也會寫（有羅馬字基礎）</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 參加動機 (複選，至少擇一必填) -->
+                <div>
+                    <p class="block text-lg font-medium morandi-text-dark mb-3">* 參加動機 (可複選，至少擇一必填)：</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center text-gray-700">
+                            <input type="checkbox" name="motivation" value="提升台語口語能力" class="morandi-checkbox">
+                            <span class="ml-3">提升台語口語能力</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="checkbox" name="motivation" value="學習台語書寫" class="morandi-checkbox">
+                            <span class="ml-3">學習台語書寫（羅馬字）</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="checkbox" name="motivation" value="提升對台語病患的服務品質" class="morandi-checkbox">
+                            <span class="ml-3">提升對台語病患的服務品質</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="checkbox" name="motivation" value="認識更多台語文化" class="morandi-checkbox">
+                            <span class="ml-3">認識更多台語文化</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="checkbox" name="motivation" value="其他" id="motivation_other_checkbox"
+                                class="morandi-checkbox">
+                            <span class="ml-3">其他：</span>
+                            <input type="text" id="motivation_other_text" name="motivation_other_text"
+                                class="ml-2 px-2 py-1 border morandi-border rounded-md w-1/3 morandi-input-focus" disabled>
+                        </label>
+                    </div>
+                    <p id="motivation_error" class="text-sm text-red-500 mt-2 hidden">請至少選擇一個參加動機。</p>
+                </div>
+            </fieldset>
+
+            <!-- 送出按鈕 -->
+            <div class="flex justify-center pt-6">
+                <button type="submit" id="submitButton"
+                    class="morandi-bg-main text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-opacity-90 transition duration-300 transform hover:scale-105">
+                    送出報名表
+                </button>
+            </div>
+            
+            <!-- 訊息顯示區 (取代 alert) -->
+            <div id="message_box" class="hidden text-center p-4 rounded-lg mt-4" role="alert"></div>
+
+        </form>
+
+        <!-- 聯絡資訊 -->
+        <footer class="mt-12 pt-6 border-t morandi-border text-center text-gray-600">
+            <h3 class="text-lg font-semibold morandi-text-dark mb-2">聯絡資訊</h3>
+            <p><strong>主辦單位：</strong> 教學部</p>
+            <p><strong>聯絡人：</strong> 林淑雅 (分機57438；信箱 cmh90022@mail.chimei.org.tw)</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Morandi Radio/Checkbox 樣式注入 (CSS 輔助)
+        document.head.insertAdjacentHTML('beforeend', `
+            <style>
+                /* 自訂 Radio 樣式 */
+                .morandi-radio {
+                    appearance: none;
+                    width: 1.25rem;
+                    height: 1.25rem;
+                    border: 2px solid #a2a295;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    transition: all 0.2s ease-in-out;
+                }
+                .morandi-radio:checked {
+                    border-color: #b7b7a4; /* 莫蘭迪綠灰邊框 */
+                    background-color: #b7b7a4; /* 莫蘭迪綠灰填充 */
+                    position: relative;
+                }
+                .morandi-radio:checked::after {
+                    content: '';
+                    display: block;
+                    width: 0.5rem;
+                    height: 0.5rem;
+                    border-radius: 50%;
+                    background: white;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+                /* 自訂 Checkbox 樣式 */
+                .morandi-checkbox {
+                    appearance: none;
+                    width: 1.25rem;
+                    height: 1.25rem;
+                    border: 2px solid #a2a295;
+                    border-radius: 0.25rem;
+                    cursor: pointer;
+                    transition: all 0.2s ease-in-out;
+                    display: inline-block;
+                    vertical-align: middle;
+                    position: relative;
+                }
+                .morandi-checkbox:checked {
+                    border-color: #b7b7a4;
+                    background-color: #b7b7a4;
+                }
+                .morandi-checkbox:checked::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 5px;
+                    height: 10px;
+                    border: solid white;
+                    border-width: 0 2px 2px 0;
+                    transform: translate(-50%, -60%) rotate(45deg);
+                }
+            </style>
+        `);
+        
+        // -----------------------------------------------------
+        // Google Apps Script Web App URL (已更新)
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkp8KVN9lI5qy_wkfdx3lV_mQH0fectd-zJDJqqtwyUXHgjY-kL48HM0B12hp3fib4/exec'; 
+        // -----------------------------------------------------
+
+        const form = document.getElementById('registrationForm');
+        const submitButton = document.getElementById('submitButton');
+        const titleOtherRadio = document.getElementById('title_other_radio');
+        const titleOtherText = document.getElementById('title_other_text');
+        const motivationOtherCheckbox = document.getElementById('motivation_other_checkbox');
+        const motivationOtherText = document.getElementById('motivation_other_text');
+        const motivationError = document.getElementById('motivation_error');
+        const extensionInput = document.getElementById('extension');
+        const mobileInput = document.getElementById('mobile');
+        const messageBox = document.getElementById('message_box');
+        
+        const countdownTimer = document.getElementById('countdown-timer');
+
+        // 顯示訊息函式 (取代 alert)
+        function showMessage(message, type = 'success') {
+            messageBox.textContent = message;
+            messageBox.className = 'text-center p-4 rounded-lg mt-4 transition-all duration-300';
+            messageBox.classList.remove('hidden');
+
+            if (type === 'success') {
+                messageBox.classList.add('bg-green-100', 'text-green-800', 'border', 'border-green-300');
+            } else if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'text-red-800', 'border', 'border-red-300');
+            }
+            
+            // 5秒後自動隱藏
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 5000);
+        }
+
+        // 倒數計時器邏輯
+        function updateCountdown() {
+            // 目標日期：115.1/10 8:00 (ROC 115年 = 2026年)
+            const targetDate = new Date('2026-01-10T08:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+            
+            // 時間計算
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                countdownTimer.innerHTML = "<strong>研習營已開始或結束！</strong> 報名已截止。";
+                countdownTimer.classList.remove('morandi-bg-light', 'morandi-text-dark');
+                countdownTimer.classList.add('bg-gray-200', 'text-gray-600');
+                return;
+            }
+
+            countdownTimer.innerHTML = `
+                距離開課倒數：
+                <span class="text-red-600 font-extrabold">${days}</span> 天
+                <span class="text-red-600 font-extrabold">${hours}</span> 小時
+                <span class="text-red-600 font-extrabold">${minutes}</span> 分
+                <span class="text-red-600 font-extrabold">${seconds}</span> 秒
+            `;
+        }
+        
+        // 啟動倒數計時器
+        updateCountdown();
+        const countdownInterval = setInterval(updateCountdown, 1000);
+
+        // 加入 Google 行事曆邏輯
+        function addToGoogleCalendar() {
+            // 課程一：1/10 08:00-12:00 (UTC+8 轉換)
+            const dates1 = '20260110T000000Z/20260110T040000Z'; 
+
+            const title = encodeURIComponent('【兩場皆必修】115年台語羅馬字（白話字）研習營');
+            const details = encodeURIComponent(
+                '本研習營分為兩場，皆為必修課程。\n\n' +
+                '【課程一：母音/子音/聲調與拚字規則】\n' +
+                '日期：115.1/10 (六) 08:00-12:00\n' +
+                '講師：陳金花\n\n' +
+                '【課程二：白話字簡史／拼字練習／成果檢測／Q&A】\n' +
+                '日期：115.1/17 (六) 08:00-12:00\n' +
+                '講師：蔣為文\n\n' +
+                '地點：552 會議室\n' +
+                '請準時出席兩場課程。'
+            );
+            const location = encodeURIComponent('552 會議室');
+            
+            const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates1}&details=${details}&location=${location}&ctz=Asia/Taipei`;
+            
+            window.open(calendarUrl, '_blank');
+        }
+        window.addToGoogleCalendar = addToGoogleCalendar; 
+
+        // 職稱 - 「其他」欄位連動
+        document.querySelectorAll('input[name="title"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.value === '其他') {
+                    titleOtherText.disabled = false;
+                    titleOtherText.focus();
+                } else {
+                    titleOtherText.disabled = true;
+                    titleOtherText.value = '';
+                }
+            });
+        });
+
+        // 參加動機 - 「其他」欄位連動
+        motivationOtherCheckbox.addEventListener('change', () => {
+            motivationOtherText.disabled = !motivationOtherCheckbox.checked;
+            if (motivationOtherCheckbox.checked) {
+                motivationOtherText.focus();
+            } else {
+                motivationOtherText.value = '';
+            }
+        });
+
+        // 表單驗證與 Apps Script 送出邏輯
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault(); // 阻止傳統表單送出
+            messageBox.classList.add('hidden'); // 隱藏舊訊息
+            
+            submitButton.disabled = true;
+            submitButton.textContent = '送出中...';
+            submitButton.classList.add('opacity-75');
+
+            // --- 1. Client-side Validation ---
+            
+            // 1.1. 聯絡電話 (分機/手機 擇一必填) 驗證
+            if (!extensionInput.value.trim() && !mobileInput.value.trim()) {
+                showMessage('請填寫聯絡電話的分機或手機號碼，擇一必填！', 'error');
+                submitButton.disabled = false;
+                submitButton.textContent = '送出報名表';
+                submitButton.classList.remove('opacity-75');
+                return;
+            }
+
+            // 1.2. 參加動機 (至少擇一必填) 驗證
+            const motivationCheckboxes = document.querySelectorAll('input[name="motivation"]:checked');
+            if (motivationCheckboxes.length === 0) {
+                motivationError.classList.remove('hidden');
+                showMessage('請至少選擇一個參加動機。', 'error');
+                submitButton.disabled = false;
+                submitButton.textContent = '送出報名表';
+                submitButton.classList.remove('opacity-75');
+                return;
+            } else {
+                motivationError.classList.add('hidden');
+            }
+            
+            // 1.3. 檢查「其他」職稱是否有填寫
+            if (titleOtherRadio.checked && !titleOtherText.value.trim()) {
+                showMessage('請填寫職稱「其他」的具體內容。', 'error');
+                submitButton.disabled = false;
+                submitButton.textContent = '送出報名表';
+                submitButton.classList.remove('opacity-75');
+                return;
+            }
+
+            // 1.4. 檢查「其他」動機是否有填寫
+            if (motivationOtherCheckbox.checked && !motivationOtherText.value.trim()) {
+                showMessage('請填寫參加動機「其他」的具體內容。', 'error');
+                submitButton.disabled = false;
+                submitButton.textContent = '送出報名表';
+                submitButton.classList.remove('opacity-75');
+                return;
+            }
+            
+            // --- 2. Data Collection & Formatting ---
+
+            const titleValue = (() => {
+                const selected = document.querySelector('input[name="title"]:checked');
+                if (selected) {
+                    return selected.value === '其他' ? titleOtherText.value.trim() : selected.value;
+                }
+                return null;
+            })();
+
+            const motivationArray = Array.from(motivationCheckboxes).map(cb => {
+                // 將「其他」的 value 替換為實際填寫的內容
+                return cb.value === '其他' ? `其他: ${motivationOtherText.value.trim()}` : cb.value;
+            });
+            
+            // 處理出席確認，確保未勾選時也傳送「否」
+            const attendanceValue = document.querySelector('input[name="attendance_confirm"]:checked') ? 
+                                    document.querySelector('input[name="attendance_confirm"]:checked').value : '否';
+
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                employee_id: document.getElementById('employee_id').value.trim(),
+                department: document.getElementById('department').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone_extension: extensionInput.value.trim(),
+                phone_mobile: mobileInput.value.trim(),
+                title: titleValue,
+                attendance_confirm: attendanceValue,
+                taiwanese_level: document.querySelector('input[name="taiwanese_level"]:checked')?.value || null,
+                motivation: motivationArray.join('; ') // 用分號分隔，方便在 Sheets 中辨識
+            };
+            
+            // --- 3. Send Data to Apps Script ---
+
+            try {
+                // 發送 POST 請求到 Apps Script Web App
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // 必須使用 no-cors
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                // 由於 no-cors 模式限制，無法讀取實際響應內容，
+                // 只要 fetch 成功完成 (無網路錯誤)，即假設 Apps Script 接收成功並寫入資料。
+                showMessage('報名成功！資料已送至 Google Sheets。', 'success');
+                
+                // 清空表單
+                form.reset();
+                titleOtherText.disabled = true;
+                motivationOtherText.disabled = true;
+
+            } catch (error) {
+                console.error('Apps Script Fetch Error:', error);
+                showMessage(`報名失敗：連線錯誤。請檢查您的網路或 Apps Script 部署設定。錯誤訊息: ${error.message}`, 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = '送出報名表';
+                submitButton.classList.remove('opacity-75');
+            }
+        });
+
+    </script>
+
+</body>
+</html>

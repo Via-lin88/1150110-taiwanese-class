@@ -175,8 +175,8 @@
                             <span class="ml-3">醫師</span>
                         </label>
                         <label class="flex items-center text-gray-700">
-                            <input type="radio" name="title" value="醫護人員" class="morandi-radio">
-                            <span class="ml-3">醫護人員 (含護理師、專科護理師等)</span>
+                            <input type="radio" name="title" value="護理師" class="morandi-radio">
+                            <span class="ml-3">護理師</span>
                         </label>
                         <label class="flex items-center text-gray-700">
                             <input type="radio" name="title" value="醫技人員" class="morandi-radio">
@@ -203,11 +203,20 @@
                 <!-- 課程出席確認 (必填) -->
                 <div class="mb-8">
                     <p class="block text-lg font-medium morandi-text-dark mb-3">* 課程出席確認 (必填)：</p>
-                    <label class="flex items-center text-gray-700">
-                        <input type="checkbox" name="attendance_confirm" value="全程參加" required
-                            class="morandi-checkbox">
-                        <span class="ml-3">我確認 1/10 (六) 及 1/17 (六) 兩場課程皆可全程參加 (共 8 小時)。</span>
-                    </label>
+                    <div class="space-y-2">
+                        <label class="flex items-center text-gray-700">
+                            <input type="checkbox" name="attendance_confirm" value="全程參加" required class="morandi-checkbox">
+                            <span class="ml-3">我確認 1/10 (六) 及 1/17 (六) 兩場課程皆可全程參加 (共 8 小時)。完成課程並通過測驗者，可獲得台語羅馬字初級認證。</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="checkbox" name="attendance_session" value="我報名 1/10 (六) 4小時課程" class="morandi-checkbox">
+                            <span class="ml-3">我報名 1/10 (六) 4小時課程</span>
+                        </label>
+                        <label class="flex items-center text-gray-700">
+                            <input type="checkbox" name="attendance_session" value="我報名 1/17 (六) 4小時課程" class="morandi-checkbox">
+                            <span class="ml-3">我報名 1/17 (六) 4小時課程</span>
+                        </label>
+                    </div>
                 </div>
 
                 <!-- 台語程度 (單選) -->
@@ -619,6 +628,10 @@
             const attendanceValue = document.querySelector('input[name="attendance_confirm"]:checked') ? 
                                     document.querySelector('input[name="attendance_confirm"]:checked').value : '否';
 
+            // 取得使用者勾選的單場課程選項（若有）
+            const sessionCheckboxes = document.querySelectorAll('input[name="attendance_session"]:checked');
+            const sessionsArray = Array.from(sessionCheckboxes).map(cb => cb.value);
+
             const formData = {
                 name: document.getElementById('name').value.trim(),
                 employee_id: document.getElementById('employee_id').value.trim(),
@@ -628,6 +641,7 @@
                 phone_mobile: mobileInput.value.trim(),
                 title: titleValue,
                 attendance_confirm: attendanceValue,
+                attendance_sessions: sessionsArray.join('; '),
                 taiwanese_level: document.querySelector('input[name="taiwanese_level"]:checked')?.value || null,
                 motivation: motivationArray.join('; ') // 用分號分隔，方便在 Sheets 中辨識
             };
